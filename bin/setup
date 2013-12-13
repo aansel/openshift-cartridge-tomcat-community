@@ -43,6 +43,9 @@ ln -sf ${SYSTEM_TOMCAT_DIR}/bin/commons-daemon.jar ${OPENSHIFT_TOMCAT_DIR}/bin/c
 ln -sf ${SYSTEM_TOMCAT_DIR}/bin/tomcat-juli.jar ${OPENSHIFT_TOMCAT_DIR}/bin/tomcat-juli.jar
 ln -sf ${SYSTEM_TOMCAT_DIR}/bin/catalina.sh ${OPENSHIFT_TOMCAT_DIR}/bin/catalina.sh
 ln -sf ${SYSTEM_TOMCAT_DIR}/bin/startup.sh ${OPENSHIFT_TOMCAT_DIR}/bin/startup.sh
+ln -sf ${SYSTEM_TOMCAT_DIR}/bin/setclasspath.sh ${OPENSHIFT_TOMCAT_DIR}/bin/setclasspath.sh
+ln -sf ${SYSTEM_TOMCAT_DIR}/bin/shutdown.sh ${OPENSHIFT_TOMCAT_DIR}/bin/shutdown.sh
+ln -sf ${SYSTEM_TOMCAT_DIR}/bin/version.sh ${OPENSHIFT_TOMCAT_DIR}/bin/version.sh
 
 
 # Need to remove link -f gets confused as this is a link to a link
