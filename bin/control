@@ -54,6 +54,14 @@ function ishttpup() {
     return 1
 }
 
+# Substitute all environment variables in a file
+function substituteEnv  {
+  if [ -f $1 ]
+  then
+    cat $1 | envsubst > $1.tmp && mv $1.tmp $1
+  fi
+}
+
 function start_app() {
     # Check for running app
     if isrunning; then
@@ -61,10 +69,33 @@ function start_app() {
     else
         # Start
         export CATALINA_HOME=$OPENSHIFT_TOMCAT_DIR
-        export CATALINA_BASE=$OPENSHIFT_TOMCAT_DIR
-        export CATALINA_TMPDIR=${OPENSHIFT_TOMCAT_DIR}/tmp
-        
-        ${OPENSHIFT_TOMCAT_DIR}/bin/tomcat start > ${OPENSHIFT_TOMCAT_DIR}/logs/tomcat.log 2>&1 &
+	export CATALINA_BASE=$OPENSHIFT_REPO_DIR
+	export CATALINA_OUT=$OPENSHIFT_TOMCAT_LOG_DIR/catalina.out
+
+	# Creation of conf directory if doesn't exist
+	if [ ! -d $CATALINA_BASE/conf ] ; then
+	  mkdir $CATALINA_BASE/conf
+	fi
+
+	# Copy general web.xml
+	cp $OPENSHIFT_TOMCAT_DIR/conf/web.xml $CATALINA_BASE/conf/web.xml
+
+	# Copy server.xml file and substitute environment variables
+	cp $OPENSHIFT_TOMCAT_DIR/template/server.xml $CATALINA_BASE/conf/
+	substituteEnv $CATALINA_BASE/conf/server.xml
+
+	# Environment variables substitution
+	echo $OPENSHIFT_ENVSUBST | while IFS=, read -a files
+	  do
+	    for file in "${files[@]}"
+	    do
+	      substituteEnv $file
+	    done
+	  done
+
+	# Start application
+	$OPENSHIFT_PRIMARY_CARTRIDGE_DIR/bin/catalina.sh start
+
         PROCESS_ID=$!
         
         echo $PROCESS_ID > $TOMCAT_PID_FILE
@@ -148,14 +179,6 @@ case "$1" in
         client_result tailing "$OPENSHIFT_TOMCAT_DIR/logs/catalina.out"
         client_result "------ Tail of Tomcat catalina.out ------"
         client_result $(tail "$OPENSHIFT_TOMCAT_DIR/logs/catalina.out")
-        exit 0
-    ;;
-    build)
-        ${OPENSHIFT_TOMCAT_DIR}/bin/build
-        exit 0
-    ;;
-    deploy)
-        ${OPENSHIFT_TOMCAT_DIR}/bin/deploy
         exit 0
     ;;
     update-configuration)

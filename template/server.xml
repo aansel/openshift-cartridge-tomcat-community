@@ -1,0 +1,12 @@
+<Server port='-1' shutdown='SHUTDOWN' debug='0'>
+  <Service name='guichetuniquerc'>
+    <Connector enableLookups='false' protocol='HTTP/1.1' address="${OPENSHIFT_TOMCAT_IP}" port='8080' maxThreads='100' debug='0' URIEncoding='utf-8'/>
+    <Engine name='guichetuniquerc' defaultHost='guichetuniquerc' debug='0' jvmRoute='guichetuniquerc'>
+      <Host name='guichetuniquerc' debug='0' appBase='${OPENSHIFT_REPO_DIR}/fake' unpackWARs='false' autoDeploy='false' xmlValidation='false' xmlNamespaceAware='false'>
+        <Context path='' docBase='${OPENSHIFT_REPO_DIR}' crossContext='false' debug='0' reloadable='false'>
+           <Manager className='org.apache.catalina.session.PersistentManager' debug='0' saveOnRestart='false' maxActiveSessions='-1' minIdleSwap='-1' maxIdleSwap='-1' maxIdleBackup='-1' />
+        </Context>
+      </Host>
+    </Engine>
+  </Service>
+</Server>
