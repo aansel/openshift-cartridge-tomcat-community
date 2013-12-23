@@ -68,6 +68,7 @@ function start_app() {
         echo "The tomcat cartridge is already running" 1>&2
     else
         # Start
+	source $OPENSHIFT_REPO_DIR/.openshift/action_hooks/pre_start
         export CATALINA_HOME=$OPENSHIFT_TOMCAT_DIR
 	export CATALINA_BASE=$OPENSHIFT_REPO_DIR
 	export CATALINA_OUT=$OPENSHIFT_TOMCAT_LOG_DIR/catalina.out
